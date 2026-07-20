@@ -1,0 +1,693 @@
+<title>Cooke Studios LLC — Apps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --card: #161616;
+    --card-hover: #1f1f1f;
+    --border: #2a2a2a;
+    --border-hover: #484848;
+    --text: #f2f2f2;
+    --muted: #a2a2a2;
+    --faint: #6a6a6a;
+    --live: #87d4a8;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 4.2rem 1.4rem 3.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  main {
+    max-width: 60rem;
+    width: 100%;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+  .crumb {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.9rem;
+  }
+  .crumb a { color: var(--faint); text-decoration: none; transition: color 0.2s ease; }
+  .crumb a:hover { color: var(--text); }
+
+  h1 {
+    font-size: 2.7rem;
+    font-weight: 300;
+    letter-spacing: -1px;
+    color: #fff;
+    margin-bottom: 0.9rem;
+    text-wrap: balance;
+  }
+  .intro {
+    color: var(--muted);
+    max-width: 38rem;
+    margin-bottom: 3.2rem;
+    text-wrap: pretty;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border);
+    margin-bottom: 1.2rem;
+  }
+  .section + .section .section-label { margin-top: 2.8rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 0.9rem;
+  }
+  .tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3rem 1.3rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .tile:hover, .tile:focus-visible {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+  .tile img { width: 56px; height: 56px; border-radius: 13px; display: block; }
+  .tile h2 { font-size: 1.08rem; font-weight: 600; margin-top: 0.2rem; letter-spacing: -0.01em; }
+  .tile .tag { font-size: 0.88rem; color: var(--muted); flex-grow: 1; text-wrap: pretty; }
+  .tile .meta { margin-top: 0.4rem; }
+
+  .meta {
+    font-size: 0.67rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .meta .state-live { color: var(--live); font-weight: 600; }
+
+  footer {
+    margin-top: 3.4rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.4rem;
+    font-size: 0.85rem;
+    color: var(--faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  footer a { color: var(--faint); text-decoration: none; border-bottom: 1px solid var(--border); transition: color 0.2s ease, border-color 0.2s ease; }
+  footer a:hover { color: var(--text); border-color: var(--border-hover); }
+
+  /* ---- modal ---- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    z-index: 10;
+    animation: overlayIn 0.22s ease;
+  }
+  @keyframes overlayIn { from { opacity: 0; } }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    max-width: 46rem;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 2rem 2.1rem 1.8rem;
+    position: relative;
+    animation: modalIn 0.26s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(14px); } }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .modal-close:hover, .modal-close:focus-visible { color: #fff; border-color: var(--border-hover); background: var(--card-hover); }
+  .modal-head { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.4rem; padding-right: 2.4rem; }
+  .modal-head img { width: 76px; height: 76px; border-radius: 17px; flex-shrink: 0; }
+  .modal-head h1 { font-size: 1.65rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+  .modal p.body { color: #cfcfcf; margin-bottom: 1rem; font-size: 0.95rem; text-wrap: pretty; }
+
+  .gallery {
+    display: flex;
+    gap: 0.7rem;
+    overflow-x: auto;
+    margin: 1.5rem -2.1rem 0;
+    padding: 0 2.1rem 0.5rem;
+    scroll-snap-type: x proximity;
+  }
+  .gallery figure { flex-shrink: 0; scroll-snap-align: start; }
+  .gallery img {
+    height: 215px;
+    width: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: block;
+    cursor: zoom-in;
+    transition: border-color 0.2s ease, filter 0.2s ease;
+  }
+  .gallery img:hover { border-color: var(--border-hover); filter: brightness(1.08); }
+  .gallery figcaption { font-size: 0.72rem; color: var(--faint); margin-top: 0.45rem; }
+
+  /* ---- lightbox ---- */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 2.2rem 1rem 1.6rem;
+    z-index: 20;
+    animation: overlayIn 0.18s ease;
+    cursor: zoom-out;
+  }
+  .lightbox img {
+    max-width: min(92vw, 60rem);
+    max-height: 80vh;
+    border-radius: 12px;
+    border: 1px solid var(--border-hover);
+    cursor: default;
+  }
+  .lightbox .lb-cap { font-size: 0.85rem; color: var(--muted); text-align: center; }
+  .lightbox .lb-count { font-size: 0.72rem; letter-spacing: 0.13em; color: var(--faint); }
+  .lightbox .modal-close { position: fixed; top: 1.1rem; right: 1.1rem; }
+  .lb-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border-hover);
+    background: rgba(22, 22, 22, 0.85);
+    color: var(--muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .lb-nav:hover, .lb-nav:focus-visible { color: #fff; background: var(--card-hover); }
+  .lb-nav.prev { left: 1rem; }
+  .lb-nav.next { right: 1rem; }
+  @media (max-width: 600px) {
+    .lb-nav.prev { left: 0.4rem; }
+    .lb-nav.next { right: 0.4rem; }
+  }
+
+  .features { list-style: none; margin-top: 1.6rem; }
+  .features li {
+    border-top: 1px solid var(--border);
+    padding: 0.65rem 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .features li:last-child { border-bottom: 1px solid var(--border); }
+  .fine { font-size: 0.78rem; color: var(--faint); margin-top: 1.1rem; }
+  .actions { margin-top: 1.5rem; display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  .actions a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    padding: 0.5rem 1.05rem;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .actions a:hover, .actions a:focus-visible { color: #fff; background: var(--card-hover); border-color: var(--border-hover); }
+  .actions a.primary { color: var(--text); border-color: var(--border-hover); }
+  .support { margin-top: 1.9rem; padding-top: 1.2rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--faint); }
+  .support a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--border); transition: color 0.2s ease, border-color 0.2s ease; }
+  .support a:hover { color: var(--text); border-color: var(--border-hover); }
+
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--border-hover); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    main, .overlay, .modal, .lightbox { animation: none; }
+    main { opacity: 1; transform: none; }
+    .tile, .tile:hover { transition: none; transform: none; }
+  }
+</style>
+
+<main id="root">
+  <noscript>
+    <p>Cooke Studios LLC — this page needs JavaScript to browse the apps.
+    You can reach me through the <a href="https://research.alexcooke.co/contact.html" style="color:#a2a2a2">contact form</a>.</p>
+  </noscript>
+</main>
+<div id="modal-root"></div>
+<div id="lightbox-root"></div>
+
+<script>
+const CONTACT = "https://research.alexcooke.co/contact.html";
+
+const ICONS = {
+  herelore: "{{ICON:herelore}}",
+  soundwitness: "{{ICON:soundwitness}}",
+  firmament: "{{ICON:firmament}}",
+  seatique: "{{ICON:seatique}}",
+  runtothebeat: "{{ICON:runtothebeat}}",
+  passportphoto: "{{ICON:passportphoto}}",
+  skewlab: "{{ICON:skewlab}}",
+  skewlabmobile: "{{ICON:skewlab}}",
+  radardebris: "{{ICON:radardebris}}",
+  showvoice: "{{ICON:showvoice}}",
+};
+
+const SHOTS = {
+  herelore: [
+    { src: "{{SHOT:herelore-story}}", cap: "The story of a Savannah street corner" },
+    { src: "{{SHOT:herelore-map}}", cap: "Tap anywhere on the map" },
+    { src: "{{SHOT:herelore-discover}}", cap: "Sixty curated places in Discover" },
+  ],
+  soundwitness: [
+    { src: "{{SHOT:soundwitness-meter}}", cap: "Live A-weighted metering" },
+    { src: "{{SHOT:soundwitness-monitor}}", cap: "Overnight monitoring, PDF report on stop" },
+  ],
+  firmament: [
+    { src: "{{SHOT:firmament-main}}", cap: "Tonight in Cleveland" },
+    { src: "{{SHOT:firmament-onboard}}", cap: "Will the sky be worth it tonight?" },
+  ],
+  seatique: [
+    { src: "{{SHOT:seatique-canvas}}", cap: "The seating canvas — drag guests to tables" },
+  ],
+  passportphoto: [
+    { src: "{{SHOT:passportphoto-home}}", cap: "Compliant photos, printed for pocket change" },
+  ],
+  skewlab: [
+    { src: "{{SHOT:skewlab-cockpit}}", cap: "The cockpit: skew-T, hodograph, convective brief" },
+    { src: "{{SHOT:skewlab-map}}", cap: "Observed and model soundings, coast to coast" },
+  ],
+  skewlabmobile: [
+    { src: "{{SHOT:skewlabmobile-skewt}}", cap: "The touch skew-T, hour by hour" },
+    { src: "{{SHOT:skewlabmobile-analysis}}", cap: "The convective analysis wall" },
+    { src: "{{SHOT:skewlabmobile-locations}}", cap: "Every site and model, one tap away" },
+  ],
+  radardebris: [
+    { src: "{{SHOT:radardebris-display}}", cap: "Four synced dual-pol panels" },
+  ],
+  showvoice: [
+    { src: "{{SHOT:showvoice-jumper}}", cap: "Scoring a jumper class" },
+    { src: "{{SHOT:showvoice-entries}}", cap: "Entries and orders of go" },
+    { src: "{{SHOT:showvoice-flatwork}}", cap: "Flatwork commands" },
+    { src: "{{SHOT:showvoice-custom}}", cap: "Custom announcements" },
+  ],
+};
+
+const APPS = [
+  {
+    slug: "herelore", name: "Herelore", section: "iPhone",
+    meta: 'Coming to the App&nbsp;Store &nbsp;·&nbsp; iOS',
+    tag: "The history of exactly where you're standing.",
+    body: [
+      "Tap the map anywhere and ask <em>what happened here?</em> — Herelore assembles that spot's story from local archives and records: the fires and floods, the homesteaders, the ballparks, the people. Written so it reads like a story rather than a database.",
+      "Beyond the tap, it narrates: voice-guided walking tours built from the records around you, and Road-Trip Radio that turns any drive into a running local-history broadcast."
+    ],
+    features: [
+      "Draws on more than twenty archives — historical newspapers, fire-insurance maps, homestead patents, storm records, historic photographs, even the fossil record",
+      "Voice-guided walking tours, grounded in real documents at every stop",
+      "Road-Trip Radio: pick a destination and listen down the highway",
+      "A passport that collects every place you've asked about",
+      "A curated Discover gallery of places with remarkable stories"
+    ],
+    actions: [{ label: "Privacy policy", href: "#" }]
+  },
+  {
+    slug: "soundwitness", name: "SoundWitness", section: "iPhone",
+    meta: 'Coming to the App&nbsp;Store &nbsp;·&nbsp; iOS',
+    tag: "A sound level meter that holds up later.",
+    body: [
+      "Most decibel meters show you a number and forget it. SoundWitness is built for the moments when the number has to stand up afterward — the neighbor's bass at 2&nbsp;a.m., the barking that never stops, the mechanical hum the landlord says isn't there.",
+      "Measure in the moment, or let it monitor overnight unattended. Then export a time-stamped report you can hand to a landlord, a property manager, or a hearing officer."
+    ],
+    features: [
+      "Live sound level metering with the readouts professionals expect",
+      "Overnight monitoring — set it down, plug it in, review the night in the morning",
+      "Time-stamped dispute reports as clean, printable PDFs",
+      "One purchase. No subscription, no ads"
+    ],
+    actions: []
+  },
+  {
+    slug: "firmament", name: "Firmament", section: "iPhone",
+    meta: 'Coming to the App&nbsp;Store &nbsp;·&nbsp; iOS',
+    tag: "A photographer's sky forecast.",
+    body: [
+      "Firmament reads tonight's atmosphere for the shots that depend on it — so you know whether the drive is worth it hours before you leave.",
+      "Built by a professional meteorologist and photographer who got tired of checking five sites to answer one question: is the sky going to do something tonight?"
+    ],
+    features: [
+      "Sunset and sunrise color potential, forecast from the actual cloud layers",
+      "Milky Way visibility windows for your location",
+      "Aurora chances, fog likelihood, and moonlight interference",
+      "A home-screen widget with tonight's outlook at a glance"
+    ],
+    actions: []
+  },
+  {
+    slug: "seatique", name: "Seatique", section: "iPhone",
+    meta: 'Coming to the App&nbsp;Store &nbsp;·&nbsp; iOS',
+    tag: "Wedding seating charts without the spreadsheet.",
+    body: [
+      "The seating chart is the last stressful thing between you and the reception. Seatique replaces the spreadsheet-and-sticky-notes ritual: sketch the room, drag guests to tables, and keep the right people together and the wrong ones apart.",
+      "When it's settled, export a chart elegant enough to stand at the reception door."
+    ],
+    features: [
+      "Lay out the actual room — round, banquet, and head tables where they'll really be",
+      "Drag-and-drop guest seating with your full guest list",
+      "Beautiful printable seating charts and per-table lists",
+      "One purchase for your whole event. No subscription"
+    ],
+    actions: []
+  },
+  {
+    slug: "skewlabmobile", name: "SkewLab for iPhone", section: "iPhone",
+    meta: 'In development &nbsp;·&nbsp; iOS',
+    tag: "The full sounding workstation, in your pocket.",
+    body: [
+      "The depth of the desktop analysis suite, computed entirely on-device: an interactive touch skew-T and hodograph running on a full port of SkewLab's engine, verified value-for-value against the desktop reference.",
+      "Long-press anywhere on the map and get a native 3&nbsp;km HRRR point sounding for the next 48 hours — plus model forecast soundings, observed radiosondes by launch cycle, and SPC outlooks right on the map."
+    ],
+    features: [
+      "The complete parameter suite — effective-inflow SRH, STP, SCP, SHIP, ECAPE — validated against SHARPpy",
+      "Interactive skew-T and hodograph with parcel traces, CAPE shading, DGZ and inversion layers",
+      "Native 3 km HRRR point soundings anywhere you long-press",
+      "Observed radiosondes plus five forecast models, with hour-by-hour scrubbing",
+      "Winter, fire, aviation, marine, and lake-effect analysis to match the desktop"
+    ],
+    actions: []
+  },
+  {
+    slug: "runtothebeat", name: "Run to the Beat", section: "iPhone",
+    meta: 'In development &nbsp;·&nbsp; iOS&nbsp;27 &nbsp;·&nbsp; fall 2026',
+    tag: "Running music that matches your cadence.",
+    body: [
+      "Pick a target cadence — or let it read your live footfalls — and Run to the Beat queues full Apple&nbsp;Music tracks at your tempo. Spotify shipped this in 2015, killed it in 2018, and runners have mourned it ever since. This is that idea, rebuilt for Apple&nbsp;Music.",
+      "It can fix the running playlist you already built, filtering and ordering it to your cadence, or find songs you've never heard at exactly your pace."
+    ],
+    features: [
+      "Fix My Playlist: your existing running playlist, filtered and sorted to your cadence",
+      "Run Now: fixed cadence or live auto mode that follows your steps",
+      "Discover new music at your tempo from the full Apple Music catalog",
+      "Saves results as real Apple Music playlists that work everywhere",
+      "Ramp programs: warm up, build, and cool down on a planned tempo arc"
+    ],
+    fine: "Requires an Apple Music subscription and iOS 27.",
+    actions: []
+  },
+  {
+    slug: "passportphoto", name: "Passport Photo Maker", section: "iPhone",
+    meta: 'In development &nbsp;·&nbsp; iOS',
+    tag: "Compliant U.S. passport photos from your own camera.",
+    body: [
+      "Passport photos cost $17 at the counter and get rejected anyway. Passport Photo Maker coaches you through taking a compliant one at home — live checks for framing, background, lighting, and expression as you shoot — then crops it to the official 2×2&Prime; specification.",
+      "Export the digital file for online applications, or a 4×6 print sheet you can have printed at the pharmacy for pocket change."
+    ],
+    features: [
+      "Live on-camera coaching: framing, background, lighting, expression",
+      "Covers U.S. passport, visa, and green-card photos — one shared official spec",
+      "Auto-crop to spec with a full compliance report",
+      "Digital file plus a tiled 4×6 print sheet",
+      "No filters, no retouching — exactly as the State Department requires"
+    ],
+    actions: []
+  },
+  {
+    slug: "skewlab", name: "SkewLab", section: "Desktop",
+    meta: '<span class="state-live">Free download</span> &nbsp;·&nbsp; macOS / Windows / Linux &nbsp;·&nbsp; v0.1.0',
+    tag: "Sounding analysis for forecasters — a modern successor to BUFKIT.",
+    body: [
+      "SkewLab is atmospheric sounding analysis rebuilt for the modern forecast desk: an interactive skew-T and hodograph cockpit on an engine whose convective parameters are validated against SHARPpy, the reference implementation behind SPC's mesoanalysis suite.",
+      "It speaks today's data natively — including 3&nbsp;km HRRR forecast soundings — and carries the specialty tools working forecasters actually use in winter and severe seasons alike."
+    ],
+    features: [
+      "SPC-grade convective parameters, validated against SHARPpy",
+      "Native 3 km HRRR forecast soundings",
+      "Winter weather diagnostics: dendritic growth zone, snow ratios, precipitation type",
+      "Sounding climatology built from 6.3 million observations at 123 stations",
+      "An iPhone edition is in development"
+    ],
+    actions: [
+      { label: "Download", href: "#", primary: true },
+      { label: "Documentation", href: "#" },
+      { label: "Release notes", href: "#" }
+    ]
+  },
+  {
+    slug: "radardebris", name: "Radar Debris Viewer", section: "Desktop",
+    meta: '<span class="state-live">Free download</span> &nbsp;·&nbsp; macOS / Windows / Linux &nbsp;·&nbsp; v1.0',
+    tag: "Track tornado debris signatures in NEXRAD radar data.",
+    body: [
+      "A NEXRAD Level&nbsp;II viewer built around one question: is that circulation lofting debris, and how deep is the column? Radar Debris Viewer displays four synced dual-polarization panels for any WSR-88D site, detects rotational couplets automatically, and follows the debris column upward through the tilts, scan after scan.",
+      "It works on archived cases and near-real-time data alike, with a 3D view of the column, projected downstream impact areas, and city arrival estimates."
+    ],
+    features: [
+      "Four-panel synced display: reflectivity, correlation coefficient, velocity, storm-relative velocity",
+      "Automatic couplet detection and tracking with stable IDs",
+      "Debris-column height followed scan by scan, charted over time",
+      "3D debris-column view, projected impact areas, and city ETAs",
+      "Archived and near-real-time Level II data for any site"
+    ],
+    fine: "An experimental research tool — never a substitute for official watches and warnings.",
+    actions: [
+      { label: "Download", href: "#", primary: true },
+      { label: "Read the disclaimer", href: "#" }
+    ]
+  },
+  {
+    slug: "showvoice", name: "ShowVoice", section: "Desktop",
+    meta: 'In development &nbsp;·&nbsp; macOS &nbsp;·&nbsp; beta at shows, summer 2026',
+    tag: "Horse show announcing that speaks for itself.",
+    body: [
+      "ShowVoice tracks entries and scores classes under USEF rules — jumper tables, time faults, placings — and speaks the announcements itself in a natural voice, entirely offline: gate calls, results, and flatwork commands from a laptop at the announcer's stand.",
+      "It imports entries straight from show-office software, so the announcer's day starts with the show already loaded."
+    ],
+    features: [
+      "Scoring under USEF rules: jumper tables, time faults, placings",
+      "Natural-voice announcements generated on the laptop — no internet required",
+      "Gate calls, results, and flatwork commands as the show runs",
+      "Entry import from show-office software"
+    ],
+    actions: []
+  }
+];
+
+const FOOTER = `
+  <footer>
+    <span>&copy; 2026 Cooke Studios&nbsp;LLC</span>
+    <span><a href="https://alexcooke.co">alexcooke.co</a> &nbsp;&middot;&nbsp; <a href="${CONTACT}">Contact</a></span>
+  </footer>`;
+
+function tile(app) {
+  return `
+    <a class="tile" href="#/${app.slug}">
+      <img src="${ICONS[app.slug]}" alt="" width="56" height="56">
+      <h2>${app.name}</h2>
+      <p class="tag">${app.tag}</p>
+      <p class="meta">${app.meta}</p>
+    </a>`;
+}
+
+function homeView() {
+  const section = (label) => `
+    <section class="section">
+      <p class="section-label">${label}</p>
+      <div class="grid">
+        ${APPS.filter(a => a.section === label).map(tile).join("")}
+      </div>
+    </section>`;
+  return `
+    <p class="crumb"><a href="https://alexcooke.co">alexcooke.co</a> / apps</p>
+    <h1>Cooke Studios LLC</h1>
+    <p class="intro">
+      The software studio of Alex Cooke — apps for the forecast desk, the
+      announcer's stand, the running trail, and wherever you happen to be
+      standing.
+    </p>
+    ${section("iPhone")}
+    ${section("Desktop")}
+    ${FOOTER}`;
+}
+
+function modalView(app) {
+  const shots = SHOTS[app.slug];
+  const gallery = shots ? `
+    <div class="gallery">
+      ${shots.map((s, i) => `
+        <figure>
+          <img src="${s.src}" alt="${s.cap}" loading="lazy" data-lb="${app.slug}:${i}">
+          <figcaption>${s.cap}</figcaption>
+        </figure>`).join("")}
+    </div>` : "";
+  const actions = app.actions.length
+    ? `<div class="actions">${app.actions.map(a =>
+        `<a href="${a.href}"${a.primary ? ' class="primary"' : ""}>${a.label}</a>`).join("")}</div>`
+    : "";
+  return `
+    <div class="overlay" id="overlay">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="modal-close" id="modal-close" aria-label="Close">&#10005;</button>
+        <div class="modal-head">
+          <img src="${ICONS[app.slug]}" alt="" width="76" height="76">
+          <div>
+            <h1 id="modal-title">${app.name}</h1>
+            <p class="meta">${app.meta}</p>
+          </div>
+        </div>
+        ${app.body.map(p => `<p class="body">${p}</p>`).join("")}
+        ${gallery}
+        <ul class="features">${app.features.map(f => `<li>${f}</li>`).join("")}</ul>
+        ${app.fine ? `<p class="fine">${app.fine}</p>` : ""}
+        ${actions}
+        <p class="support">
+          Questions about ${app.name}? <a href="${CONTACT}">Get in touch</a>.
+        </p>
+      </div>
+    </div>`;
+}
+
+let lastFocus = null;
+let lb = null; // {slug, idx}
+
+function lightboxView() {
+  const shots = SHOTS[lb.slug];
+  const s = shots[lb.idx];
+  const many = shots.length > 1;
+  return `
+    <div class="lightbox" id="lightbox">
+      <button class="modal-close" id="lb-close" aria-label="Close image">&#10005;</button>
+      ${many ? '<button class="lb-nav prev" id="lb-prev" aria-label="Previous image">&#8249;</button>' : ""}
+      <img src="${s.src}" alt="${s.cap}">
+      <div class="lb-cap">${s.cap}</div>
+      ${many ? `<div class="lb-count">${lb.idx + 1} / ${shots.length}</div>` : ""}
+      ${many ? '<button class="lb-nav next" id="lb-next" aria-label="Next image">&#8250;</button>' : ""}
+    </div>`;
+}
+
+function renderLightbox() {
+  const root = document.getElementById("lightbox-root");
+  if (!lb) { root.innerHTML = ""; return; }
+  root.innerHTML = lightboxView();
+  const box = document.getElementById("lightbox");
+  box.addEventListener("click", e => { if (e.target === box) closeLightbox(); });
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  const prev = document.getElementById("lb-prev"), next = document.getElementById("lb-next");
+  if (prev) prev.addEventListener("click", () => navLightbox(-1));
+  if (next) next.addEventListener("click", () => navLightbox(1));
+  document.getElementById("lb-close").focus();
+}
+
+function openLightbox(slug, idx) {
+  lb = { slug, idx };
+  renderLightbox();
+}
+function closeLightbox() {
+  lb = null;
+  renderLightbox();
+  const mc = document.getElementById("modal-close");
+  if (mc) mc.focus();
+}
+function navLightbox(d) {
+  const n = SHOTS[lb.slug].length;
+  lb.idx = (lb.idx + d + n) % n;
+  renderLightbox();
+}
+
+function closeModal() {
+  if (location.hash && location.hash !== "#" && location.hash !== "#/") {
+    location.hash = "#/";
+  }
+}
+
+function render() {
+  const slug = location.hash.replace(/^#\/?/, "");
+  const app = APPS.find(a => a.slug === slug);
+  const root = document.getElementById("root");
+  const modalRoot = document.getElementById("modal-root");
+
+  if (!root.dataset.ready) {
+    root.innerHTML = homeView();
+    root.dataset.ready = "1";
+  }
+
+  if (app) {
+    lastFocus = document.activeElement;
+    modalRoot.innerHTML = modalView(app);
+    document.body.style.overflow = "hidden";
+    document.title = `${app.name} — Cooke Studios LLC`;
+    const overlay = document.getElementById("overlay");
+    overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    overlay.querySelectorAll("[data-lb]").forEach(img => {
+      img.addEventListener("click", () => {
+        const [slug, idx] = img.dataset.lb.split(":");
+        openLightbox(slug, Number(idx));
+      });
+    });
+    document.getElementById("modal-close").focus();
+  } else {
+    modalRoot.innerHTML = "";
+    document.body.style.overflow = "";
+    document.title = "Cooke Studios LLC — Apps";
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    lastFocus = null;
+  }
+  if (lb) closeLightbox();
+}
+
+document.addEventListener("keydown", e => {
+  if (lb) {
+    if (e.key === "Escape") closeLightbox();
+    else if (e.key === "ArrowLeft" && SHOTS[lb.slug].length > 1) navLightbox(-1);
+    else if (e.key === "ArrowRight" && SHOTS[lb.slug].length > 1) navLightbox(1);
+    return;
+  }
+  if (e.key === "Escape") closeModal();
+});
+window.addEventListener("hashchange", render);
+render();
+</script>
